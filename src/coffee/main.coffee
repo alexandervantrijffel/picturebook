@@ -1,3 +1,6 @@
+hasFullscreen = (id) ->
+	i = document.getElementById(id)
+	i.requestFullscreen || i.webkitRequestFullscreen || i.mozRequestFullScreen || i.msRequestFullscreen
 goFullscreen = (id) ->
 	i = document.getElementById(id)
 	if i.requestFullscreen
@@ -18,13 +21,15 @@ ImageToggler = class ImageToggler
 		@currentIndex = 0
 		@photosUrls = ['http://pbs.twimg.com/media/BHHSn9jCIAEc9a9.jpg'
 				, 'http://pbs.twimg.com/media/BPnnHJeCcAAbaxm.jpg'
-				, 'http://upload.wikimedia.org/wikipedia/commons/3/37/Killerwhales_jumping.jpg']
+				, 'http://upload.wikimedia.org/wikipedia/commons/3/37/Killerwhales_jumping.jpg'
+				, 'http://pbs.twimg.com/media/BjLy5SbIgAAYJYt.jpg'
+				, 'http://pbs.twimg.com/media/Bi-W93-IEAA5q4L.jpg']
 		@photos = []
 		@imageContainer = $("#fullscreen")
 		@image = $("#fullscreen img")
 		_.each @photosUrls, (e) =>
 			@load e
-		setTimeout @toggle,2000
+		setTimeout @toggle,1000
 
 	load: (src) =>
 		img1 = new Image()
@@ -35,11 +40,9 @@ ImageToggler = class ImageToggler
 		img1.src = src
 
 	toggle: =>
-		console.log 'index',@currentIndex
 		photo = @photos[@currentIndex]
-		if @photos.length-1 > @currentIndex then @currentIndex++ else @currentIndex = 0
-
 		console.log 'toggling', photo
+		if @photos.length-1 > @currentIndex then @currentIndex++ else @currentIndex = 0
 		windowSize = 
 			x:$(document).width()
 			y:$(document).height()
@@ -50,20 +53,23 @@ ImageToggler = class ImageToggler
 		$("#imageRatio").text("Image ratio: #{imageRatio.toFixed(2)}")
 		$("#ratioDiff").text("Ratio diff: #{ratioDiff}")
 		if ratioDiff > 1.5
-			if (photo.width < )
+			resizeDiff=0
 			if (photo.width > photo.height)
-				console.log 'landscape'
-				@image.css 'width', photo.width
-				@image.css 'height', photo.height
+				resizeDiff = windowSize.x / photo.width
+				console.log "landscape x #{photo.width} y #{photo.height}"
+				@image.css 'width', windowSize.x
+				@image.css 'height', resizeDiff * photo.height
 			else
-				console.log 'portrait'
-				@image.css 'width', photo.width
-				@image.css 'height', photo.height
-				# @imageContainer.css 'background-size','20%'	
+				console.log "portrait x #{photo.width} y #{photo.height}"
+				resizeDiff = windowSize.y / photo.height
+				@image.css 'height', windowSize.y
+				@image.css 'width', resizeDiff * photo.width
+			$("#resizeDiff").text("Resize diff: #{resizeDiff.toFixed(2)}")
 			@image.attr 'src', photo.src
 			@imageContainer.css 'background-image', ''
 			@image.show()
 		else
+			$("#resizeDiff").text("")
 			@image.attr 'src', ''
 			@image.hide()
 			@imageContainer.css 'background-image', "url(#{photo.src})"
@@ -73,4 +79,11 @@ $("#clickme").click ->
 	goFullscreen 'fullscreen'
 
 $ ->
+	if !hasFullscreen 'fullscreen' then $("#clickme").hide()
 	toggler = new ImageToggler()
+
+
+
+blockMove = (event) ->
+  # Tell Safari not to move the window.
+  event.preventDefault()
