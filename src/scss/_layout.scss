@@ -1,0 +1,204 @@
+html {
+    height: 100%;
+}
+body {
+    font-family: 'Open Sans', sans-serif;
+    color: $deftextcolor;
+}
+#pageheader {
+    text-align: right;
+    padding: 6px 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    position: fixed;
+    z-index: 1030;
+    overflow: visible;
+    background-color: #fff;
+
+    ul {
+        font-size: 0.8em;
+        li {
+            display: inline;
+            padding-right: 24px;
+            i {
+                  display: inline-block;
+                  padding-right: 8px;
+            }
+            a {
+                  color: $deftextcolor;
+                  cursor: pointer;
+            }
+        }
+    }
+}
+div#headerspace {
+    height: 40px;
+}
+div#pagecontent {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    .dgrey {
+        color: #eeeeee;
+    }
+    .dblue {
+        color: #112637;
+    }
+}
+
+#mainlogo {
+    width: 200px;
+}
+
+.pagecontainer {
+    padding: 48px;
+    margin: 16px auto;
+    text-align: center;
+}
+.contentwrap {
+    width: 1170px\9; // IE 8
+    max-width: 1170px;
+    width: auto;
+    margin: 0 auto;
+}
+#menu {
+    padding: 0 48px;
+    .contentwrap {
+        text-align: left;
+    }
+}
+.centralcontainer {
+    //@extend .debug;
+    @extend .pagecontainer;
+    text-align: center;
+    div {
+        margin: 15px auto; 
+    }
+    .title {
+        @extend .mh2;
+    }
+    .main {
+        font-size: 1.4em;
+        width: 90%;
+        margin: 15px auto;
+        text-align: center;
+    }
+}
+.pagecontainerdark {
+    @extend .pagecontainer;
+    text-shadow:1px 1px 0 rgba(0,0,0,.1);
+    background-color: #2D343E;
+    color: $lighttextcolor;
+}
+#footer {
+    color: $lighttextcolor;
+    font-size: 0.8em;
+
+    div.col {
+        width: 32%;
+        float: left;
+        text-align: center;
+        margin-top: 6px;
+        @media only screen and (max-width: $breaklarge) {
+        }
+        @media only screen and (max-width: $breakmedium) {
+            font-size: 1.2em;
+            width: 100%;
+            float: none;
+            margin-bottom: 36px;
+        }
+        @media only screen and (max-width: $breaksmall) {
+        }
+
+        &#midcol {
+            margin-top: 0;
+        }
+
+        ul {
+            margin: 0 auto;
+            width: 200px\9; // IE 8
+            max-width: 200px;
+
+            li.social {
+                display:inline-block;
+                padding: 3px 1px;
+                a {
+                    background-image: url(../img/sprite-map.png);
+                    background-size: auto;
+                    background-clip: border-box;
+                    background-attachment: scroll;
+                    width: 37px;
+                    height: 37px;
+                    display:inline-block;
+                }
+                &.twitter a {
+                    background-position: 0px -274px; // linkedin    
+                }
+                &.linkedin a {
+                    // background-position: 0px -163px; // linkedinhover
+                    background-position: 0px -200px; // linkedin
+                }
+                &.github a {
+                    background-position: 0px -421px;
+                }
+            }
+        }
+
+        #followmeheader {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+    }
+    div#address {
+        width: 200px\9; // IE 8
+        max-width: 200px;
+        margin: 0 auto;
+        text-align: left !important;
+    }
+    img#footerlogo {
+        width: 180px;
+    }
+}
+#scrolltotop {
+    background-color: #000 !important;
+}
+
+#buttonbar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+}
+
+#fullscreen {
+    // background-image: url('../img/Killerwhales_jumping.jpg');
+    background-repeat: none;
+    background-position: center center;
+    background-size: cover;
+    height: 100vh;
+    width: 100%;
+    border: 1px solid black;
+    background-color: #222222;
+    text-align: center;
+    vertical-align: middle;
+    img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+#infobar {
+    @extend .alpha60;
+    @extend .minimalrounded;
+    position: absolute;
+    z-index: 100;
+    top: 45px;
+    left: 10px;
+    border: 1px solid #444444;
+    text-align: left;
+    padding: 6px;
+    color: #a0a0a0;
+    font-size: 0.8em;
+}

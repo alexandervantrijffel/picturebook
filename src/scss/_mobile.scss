@@ -1,0 +1,39 @@
+@media screen and (max-width: $breaklarge) {
+	.service {
+		max-width: 276px;	
+		&>div {
+			max-width: 204px;
+		}
+	}	
+}
+@media screen and (max-width: $breakmedium) {
+	.service {
+		max-width: 212px;
+		padding: 0 6px;	
+		&>div {
+			max-width: 152px;
+		}
+	}
+	#menu {
+		padding: 0 12px;
+	}
+	.pagecontainer {
+		 padding: 24px 12px;
+	}
+}
+@media screen and (max-width: $breaksmall) {
+	.service {
+		max-width: 100%;
+		float: none;	
+		&>div {
+			max-width: 100%;
+			float: none;
+		}
+	}	
+	.centralcontainer .main {
+		font-size: 1em;
+	}
+	h2, .mh2 {
+		font-size: 1.6em;
+	}
+}

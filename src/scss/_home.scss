@@ -1,0 +1,127 @@
+#jumbotron {
+	background: url('../img/rotterdam.jpg') no-repeat right center;
+	-moz-background-size: cover;
+  	-webkit-background-size: cover;
+  	-o-background-size: cover;
+  	background-size: cover;
+	width: 100%;
+	height: 100%;
+	height: 400px;
+	margin: 0 0 48px 0;
+
+	div {
+		div {
+			float: left;
+			width: 50%;
+			max-width: 440px;
+			position: relative;
+			@media only screen and (max-width: $breaksmall) {
+				float: none;
+				width: 100%;
+				max-width: 100%;
+			}
+		}	
+
+		span {
+			@extend .alpha60;
+			@extend .minimalrounded;
+
+			color: $lighttextcolor;
+			text-shadow:1px 1px 0 rgba(0,0,0,.1);
+			padding: 8px 24px;
+			display: inline-block;
+			position: relative;
+
+			&#companytitle {
+				top:  80px;
+				h1 {
+					font-size: 4em;
+					display: inline;
+				}
+			}
+			&#companyheader {
+				top: 102px;
+				left: 200px;
+				width: 386px\9; // IE 8
+				max-width: 386px;				
+				text-align: center;
+
+				@media only screen and (max-width: $breaklarge) {
+					left: 0;
+				}
+				@media only screen and (max-width: $breaksmall) {
+					font-size: 1em;
+				}
+				h2 {
+					display: inline-block;					
+				}
+			}
+			&#companysubtitle {
+				top: 120px;
+				text-align: left;
+				left: 200px;
+				width: 386px\9; // IE 8
+				max-width: 386px;				
+				text-align: center;
+
+				@media only screen and (max-width: $breaklarge) {
+					left: 0;
+				}
+				@media only screen and (max-width: $breaksmall) {
+					font-size: 1em;
+				}
+				h2 {
+					display: inline-block;
+				}	
+			}
+		}
+	}
+}
+
+#headlines {
+	#headerwrap {
+		text-align: left;
+	}
+	h3 {
+		display: inline-block;
+		text-align: left;
+		margin-bottom: 12px;
+		line-height: 2em;
+		border-bottom: 2px solid $structuraturquoise;
+	}
+	#servicewrap {
+		margin: 0 auto;
+	}
+}
+
+.service {
+	float:left;
+	width: 370px\9; // IE 8
+	max-width: 370px;
+	margin: 15px 0;
+	padding: 0 12px;
+	&>div {
+		float: left;
+		width: 292px\9; // IE 8
+		max-width: 292px;
+		text-align: left;
+	}
+	i {
+		width: 48px !important;
+		content: "";
+		display: block;
+		float: left;
+		color: $structuraturquoise;
+		-webkit-transition: all 0.4s ease-in-out;
+		-moz-transition: all 0.4s ease-in-out;
+		-o-transition: all 0.4s ease-in-out;
+		transition: all 0.4s ease-in-out;
+	}
+	span {
+		display: inline-block;
+		top: -3px;
+		font-size: 1.4em;
+		position: relative;
+		font-weight: 500;
+	}
+}
