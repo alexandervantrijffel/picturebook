@@ -1,3 +1,5 @@
+window.console = window.console || {};
+window.console.log = window.console.log || function() {};
 var ImageToggler, blockMove, goFullscreen, hasFullscreen,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
