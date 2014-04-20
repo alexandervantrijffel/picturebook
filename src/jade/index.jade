@@ -1,15 +1,12 @@
 extends layout
 
 block content
-    div#buttonbar
-        button#clickme Go fullscreen
-
-    div#infobar
-        div#screenRatio Loading...
-        div#imageRatio
-        div#ratioDiff
-        div#resizeDiff
-
-    div#fullscreen
-        img
-
+    div#angulartmp
+        div(ng-if="!currentUser")
+            div
+                button(data-ng-click="showLogin()")
+        div(ng-if="currentUser")
+            div Hello {{currentUser.name}}
+        a(href="#!/") Home
+        a(href="#!/about") About    
+    div(data-ng-view)

@@ -1,0 +1,469 @@
+angular.module("ngApp", [ "ngRoute", "ui.bootstrap", "vr.directives.slider" ]).config(function($routeProvider, $locationProvider, USER_ROLES, $httpProvider) {
+    $routeProvider.when("/", {
+        templateUrl: "start.html",
+        controller: "StartController"
+    }).when("/about", {
+        templateUrl: "about.html",
+        controller: "AboutController",
+        params: USER_ROLES.admin
+    }).otherwise({
+        redirectTo: "/"
+    });
+    $locationProvider.html5Mode(false).hashPrefix("!");
+    return delete $httpProvider.defaults.headers.common["X-Requested-With"];
+}).value("rootUrl", "").run(function($rootScope, AUTH_EVENTS, AuthService) {
+    return $rootScope.$on("$routeChangeStart", function(event, next, current) {
+        if (next.authorizedRoles) {
+            if (!AuthService.isAuthorized(next.authorizedRoles)) {
+                alert("You are not allowed to access this page because you are not a member of " + next.authorizedRoles);
+                console.log("authorizedRoles", next.authorizedRoles);
+                event.preventDefault();
+                if (AuthService.isAuthenticated) {
+                    return $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+                } else {
+                    return $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+                }
+            }
+        }
+    });
+});
+
+if (typeof console === "undefined") {
+    window.console = {
+        log: function() {}
+    };
+}
+
+if (typeof console === "undefined") {
+    window.console = function() {
+        return {
+            log: function() {}
+        };
+    };
+}
+
+var ImageToggler, blockMove, __bind = function(fn, me) {
+    return function() {
+        return fn.apply(me, arguments);
+    };
+};
+
+ImageToggler = ImageToggler = function() {
+    function ImageToggler() {
+        this.toggle = __bind(this.toggle, this);
+        this.load = __bind(this.load, this);
+        this.currentIndex = 0;
+        this.photosUrls = [ "http://pbs.twimg.com/media/BHHSn9jCIAEc9a9.jpg", "http://pbs.twimg.com/media/BPnnHJeCcAAbaxm.jpg", "http://upload.wikimedia.org/wikipedia/commons/3/37/Killerwhales_jumping.jpg", "http://pbs.twimg.com/media/BjLy5SbIgAAYJYt.jpg", "http://pbs.twimg.com/media/Bi-W93-IEAA5q4L.jpg" ];
+        this.photos = [];
+        this.imageContainer = $("#fullscreen");
+        this.image = $("#fullscreen img");
+        _.each(this.photosUrls, function(_this) {
+            return function(e) {
+                return _this.load(e);
+            };
+        }(this));
+        setTimeout(this.toggle, 1e3);
+    }
+    ImageToggler.prototype.load = function(src) {
+        var img1;
+        img1 = new Image();
+        img1.onload = function(_this) {
+            return function() {
+                console.log("img1 loaded", img1);
+                console.log("img width " + img1.width + " img height " + img1.height);
+                return _this.photos.push(img1);
+            };
+        }(this);
+        return img1.src = src;
+    };
+    ImageToggler.prototype.toggle = function() {
+        var imageRatio, photo, ratioDiff, resizeDiff, screenRatio, windowSize;
+        photo = this.photos[this.currentIndex];
+        console.log("toggling", photo);
+        if (this.photos.length - 1 > this.currentIndex) {
+            this.currentIndex++;
+        } else {
+            this.currentIndex = 0;
+        }
+        windowSize = {
+            x: $(document).width(),
+            y: $(document).height()
+        };
+        screenRatio = windowSize.x / windowSize.y;
+        imageRatio = photo.width / photo.height;
+        ratioDiff = (screenRatio / imageRatio).toFixed(2);
+        $("#screenRatio").text("Screen ratio: " + screenRatio.toFixed(2));
+        $("#imageRatio").text("Image ratio: " + imageRatio.toFixed(2));
+        $("#ratioDiff").text("Ratio diff: " + ratioDiff);
+        if (ratioDiff > 1.5) {
+            resizeDiff = 0;
+            if (photo.width > photo.height) {
+                resizeDiff = windowSize.x / photo.width;
+                console.log("landscape x " + photo.width + " y " + photo.height);
+                this.image.css("width", windowSize.x);
+                this.image.css("height", resizeDiff * photo.height);
+            } else {
+                console.log("portrait x " + photo.width + " y " + photo.height);
+                resizeDiff = windowSize.y / photo.height;
+                this.image.css("height", windowSize.y);
+                this.image.css("width", resizeDiff * photo.width);
+            }
+            $("#resizeDiff").text("Resize diff: " + resizeDiff.toFixed(2));
+            this.image.attr("src", photo.src);
+            this.imageContainer.css("background-image", "");
+            this.image.show();
+        } else {
+            $("#resizeDiff").text("");
+            this.image.attr("src", "");
+            this.image.hide();
+            this.imageContainer.css("background-image", "url(" + photo.src + ")");
+        }
+        return setTimeout(this.toggle, 3e3);
+    };
+    return ImageToggler;
+}();
+
+blockMove = function(event) {
+    return event.preventDefault();
+};
+
+angular.module("ngApp").constant("USER_ROLES", {
+    all: "*",
+    admin: "admin",
+    guest: "guest"
+}).constant("AUTH_EVENTS", {
+    loginSuccess: "auth-login-success",
+    loginFailed: "auth-login-failed",
+    logoutSuccess: "auth-logout-success",
+    sessionTimeout: "auth-session-timeout",
+    notAuthenticated: "auth-not-authenticated",
+    notAuthorized: "auth-not-authorized"
+});
+
+angular.module("ngApp").factory("AuthService", function($http, Session) {
+    return {
+        login: function(credentials) {
+            return Session.create("sessionId", "alex", "admin");
+            return $http.post("/login", credentials).then(function(res) {
+                return Session.create(res.id, res.userid, res.role);
+            });
+        },
+        isAuthenticated: function() {
+            return !!Session.userId;
+        },
+        isAuthorized: function(authorizedRoles) {
+            if (!angular.isArray(authorizedRoles)) {
+                authorizedRoles = [ authorizedRoles ];
+            }
+            return this.isAuthenticated() && authorizedRoles.indexOf(Session.userRole !== -1);
+        }
+    };
+});
+
+angular.module("ngApp").service("ImageLoader", function($http) {
+    this.interval = 5e3;
+    this.updateInterval = function(_this) {
+        return function(interval) {
+            if (interval <= 600) {
+                console.error("The interval must be at least 600 (ms)");
+                return;
+            }
+            console.log("new interval ", interval);
+            _this.interval = interval;
+            return _this.resetTimeout();
+        };
+    }(this);
+    this.create = function(_this) {
+        return function(updateCurrentImage) {
+            _this.images = [];
+            _this.index = -1;
+            _this.updateCurrentImage = updateCurrentImage;
+            _this.resetTimeout();
+            return _this;
+        };
+    }(this);
+    this.resetTimeout = function(_this) {
+        return function() {
+            if (_this.timer && _this.timer > 0) {
+                clearTimeout(_this.timer);
+            }
+            return _this.timer = setTimeout(_this.onTick, _this.interval);
+        };
+    }(this);
+    this.add = function(_this) {
+        return function(img) {
+            if (!angular.isArray(img)) {
+                img = [ img ];
+            }
+            return _this.images.concat(img);
+        };
+    }(this);
+    this.hasMoreImages = function(_this) {
+        return function() {
+            return _this.index + 1 < _this.images.length;
+        };
+    }(this);
+    this.displayNext = function(_this) {
+        return function() {
+            if (!_this.hasMoreImages()) {
+                console.log("retrieving images, timer", _this.timer);
+                if (_this.index === -1 || !_this.images || _this.images.length < _this.index) {
+                    return $http.post("http://localhost:3001/api/pics", {}).success(function(result) {
+                        return _this.load(result.images);
+                    }).error(function(data, status, headers, config) {
+                        return console.log("" + status + " failed to retrieve first images");
+                    });
+                } else {
+                    return $http.post("/api/images/next", {
+                        id: _this.images[_this.index].id
+                    }).success(function(result) {
+                        return this.load(result.images);
+                    }).error(function(data, status, headers, config) {
+                        return console.log("" + status + " Failed to retrieve images.");
+                    });
+                }
+            }
+        };
+    }(this);
+    this.displayPrevious = function(_this) {
+        return function() {
+            if (_this.index > 0) {
+                _this.index--;
+            }
+            console.log("displaying index " + _this.index);
+            return _this.updateCurrentImage(_this.images[_this.index]);
+        };
+    }(this);
+    this.onTick = function(_this) {
+        return function() {
+            _this.displayNext();
+            return _this.timer = setTimeout(_this.onTick, _this.interval);
+        };
+    }(this);
+    this.load = function(_this) {
+        return function(imgsrc) {
+            var img1;
+            img1 = new Image();
+            img1.onload = function() {
+                console.log("img1 loaded", imgl);
+                console.log("img width " + img1.width + " img height " + img1.height);
+                return _this.images.push(img1.src);
+            };
+            return img1.src = imgsrc.src;
+        };
+    }(this);
+    return this;
+});
+
+angular.module("ngApp").service("Session", function() {
+    this.create = function(sessionId, userId, userRole) {
+        this.id = sessionId;
+        this.userId = userId;
+        this.userRole = userRole;
+        return this;
+    };
+    this.destroy = function() {
+        this.id = null;
+        this.userId = null;
+        this.userRole = null;
+        return this;
+    };
+    return this;
+});
+
+angular.module("ngApp").directive("focusMe", function($timeout, $parse) {
+    return {
+        link: function(scope, element, attrs) {
+            var model;
+            model = $parse(attrs.focusMe);
+            scope.$watch(model, function(value) {
+                if (value === true) {
+                    return $timeout(function() {
+                        return element[0].focus();
+                    });
+                }
+            });
+            return element.bind("blur", function() {
+                return scope.$apply(model.assign(scope, false));
+            });
+        }
+    };
+});
+
+angular.module("ngApp").controller("AboutController", function($scope) {
+    return console.log("Hello about");
+});
+
+angular.module("ngApp").controller("AddImageController", function($scope, $http) {
+    $scope.focusImageUrl = true;
+    $scope.addResult = "";
+    return $scope.add = function(_this) {
+        return function(image) {
+            if (!image || image.imageUrl.indexOf("http://") !== 0 && image.imageUrl.indexOf("https://") !== 0) {
+                return $scope.addResult = "Please enter an address starting with http:// or https://";
+            } else if (image.imageUrl) {
+                return $http.post("/api/images/add", {
+                    url: image.imageUrl
+                }).success(function(result) {
+                    angular.element($("#addImageForm")).scope().image.imageUrl = "";
+                    return $scope.addResult = "Image added successfully.";
+                }).error(function(data, status, headers, config) {
+                    return $scope.addResult = "" + status + " Failed to add the image.";
+                });
+            }
+        };
+    }(this);
+});
+
+angular.module("ngApp").controller("ApplicationController", function($scope, USER_ROLES, $modal, AUTH_EVENTS) {
+    $scope.currentUser = null;
+    $scope.userRoles = USER_ROLES;
+    $scope.isAuthorized = false;
+    $scope.showLogin = function() {
+        var loginModal;
+        loginModal = $modal.open({
+            templateUrl: "loginModal.html",
+            controller: "LoginController",
+            backdrop: false,
+            keyboard: true
+        });
+        return loginModal.result.then(function() {
+            console.log("succ");
+            return loginModal = void 0;
+        }, function() {
+            console.log("cancelled");
+            return loginModal = void 0;
+        });
+    };
+    return $scope.$on(AUTH_EVENTS.loginSuccess, function(event, user) {
+        return $scope.currentUser = user;
+    });
+});
+
+angular.module("ngApp").controller("LoginController", function($scope, $rootScope, AUTH_EVENTS, AuthService, $modalInstance) {
+    $scope.credentials = {
+        username: "",
+        password: ""
+    };
+    $scope.ok = function() {
+        return $modalInstance.dismiss();
+    };
+    return $scope.login = function(credentials) {
+        AuthService.login(credentials);
+        console.log("credentials", credentials);
+        $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, {
+            name: "Alex (" + credentials.username + ")"
+        });
+        return $modalInstance.close();
+    };
+});
+
+angular.module("ngApp").controller("StartController", function($scope, ImageLoader, $modal) {
+    console.log("hello start controller");
+    $scope.keys = "";
+    $scope.currentImage = {
+        src: ""
+    };
+    $scope.currentImageSrc = "";
+    $scope.imageLoader = ImageLoader.create(function(newImg) {
+        console.log("currentImageSrc:", newImg.src);
+        $scope.currentImage = newImg;
+        $scope.currentImageSrc = newImg.src;
+        return $scope.$apply();
+    });
+    $scope.hasFullScreen = function() {
+        var i;
+        i = document.getElementById("fullscreen");
+        return i.requestFullscreen || i.webkitRequestFullscreen || i.mozRequestFullScreen || i.msRequestFullscreen;
+    };
+    if (!$scope.hasFullScreen()) {
+        $("#clickme").hide();
+    }
+    $("body").keyup(function(e) {
+        if (e.keyCode === 37) {
+            $scope.keys += "LEFT ";
+            $scope.imageLoader.displayPrevious();
+        } else if (e.keyCode === 39) {
+            $scope.keys += "RIGHT ";
+            $scope.imageLoader.displayNext();
+        }
+        return $scope.$apply();
+    });
+    $scope.currentInterval = 3;
+    $scope.$watch("currentInterval", function(newVal, oldVal) {
+        var newInterval;
+        newInterval = 5e3;
+        switch (newVal) {
+          case 1:
+            newInterval = 4e4;
+            break;
+
+          case 2:
+            newInterval = 15e3;
+            break;
+
+          case 3:
+            newInterval = 1e4;
+            break;
+
+          case 4:
+            newInterval = 4e3;
+            break;
+
+          case 5:
+            newInterval = 1500;
+        }
+        return $scope.imageLoader.updateInterval(newInterval);
+    });
+    $scope.translateInterval = function(val) {
+        switch (val) {
+          case "1":
+            return "Very slow";
+
+          case "2":
+            return "Slow";
+
+          case "3":
+            return "Normal";
+
+          case "4":
+            return "Fast";
+
+          case "5":
+            return "Very fast";
+        }
+    };
+    $scope.showAddImage = function() {
+        var loginModal;
+        loginModal = $modal.open({
+            templateUrl: "AddImage.html",
+            controller: "AddImageController",
+            backdrop: false,
+            keyboard: true
+        });
+        return loginModal.result.then(function() {
+            console.log("succ");
+            return loginModal = void 0;
+        }, function() {
+            console.log("cancelled");
+            return loginModal = void 0;
+        });
+    };
+    return $scope.goFullScreen = function() {
+        var i;
+        i = document.getElementById("fullscreen");
+        if (i.requestFullscreen) {
+            console.log("1 go fullscreen");
+            return i.requestFullscreen();
+        } else if (i.webkitRequestFullscreen) {
+            console.log("webkit go fullscreen");
+            return i.webkitRequestFullscreen();
+        } else if (i.mozRequestFullScreen) {
+            console.log("moz go fullscreen");
+            return i.mozRequestFullScreen();
+        } else if (i.msRequestFullscreen) {
+            console.log("ms go fullscreen");
+            return i.msRequestFullscreen();
+        }
+    };
+});

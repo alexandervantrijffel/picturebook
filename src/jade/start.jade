@@ -1,0 +1,42 @@
+div#buttonbar
+        button#clickme(ng-click="goFullScreen()") Go fullscreen
+div#infobar
+    div#screenRatio Loading...
+    div#imageRatio
+    div#ratioDiff
+    div#resizeDiff
+div#fullscreen
+    img(src="{{currentImageSrc}}")
+div(id="controlbar")
+    ul
+        li
+            div Current: {{currentImage.src}}
+            div Keys: {{keys}}
+        li
+            div the image: {{currentImageSrc}}
+        li(id ='slider-container')
+            slider(data-ng-model="currentInterval" 
+                floor="1" ceiling="5" step="1" precision="0" 
+                translate-fn="translateInterval")
+        li
+            a(href="" data-ng-click="showAddImage()" id="addImageButton" title="Add new image")
+                i(class="fa fa-plus-square")
+script(id='AddImage.html' type='text/ng-template')
+    .modal-header
+        h3 Add image
+            span.closebtn(data-ng-click='cancel()')
+    .modal-body
+      form#addImageForm(ng-submit='add(image)', novalidate='novalidate')
+        ul.nav.nav-tabs
+          li.active
+            a(href='#fromurl', data-toggle='tab') Paste image URL
+          li
+            a(href='#upload', data-toggle='tab') Upload an image
+        .tab-content
+          #fromurl.tab-pane.active
+            label(for='imageUrl') Address:
+            input#imageUrl(type='text', ng-model='image.imageUrl', placeholder='http://', focus-me='focusImageUrl')
+            button(type='submit') Add
+            div(data-ng-if='addResult') {{addResult}}
+          #upload.tab-pane
+            | Upload now!

@@ -1,22 +1,3 @@
-window.console ?=
-    log:->
-hasFullscreen = (id) ->
-	i = document.getElementById(id)
-	i.requestFullscreen || i.webkitRequestFullscreen || i.mozRequestFullScreen || i.msRequestFullscreen
-goFullscreen = (id) ->
-	i = document.getElementById(id)
-	if i.requestFullscreen
-		console.log '1 go fullscreen'
-		i.requestFullscreen()
-	else if i.webkitRequestFullscreen
-		console.log 'webkit go fullscreen'
-		i.webkitRequestFullscreen()
-	else if i.mozRequestFullScreen
-		console.log 'moz go fullscreen'
-		i.mozRequestFullScreen()
-	else if i.msRequestFullscreen
-		console.log 'ms go fullscreen'
-		i.msRequestFullscreen()  
 
 ImageToggler = class ImageToggler
 	constructor: ->
@@ -77,14 +58,8 @@ ImageToggler = class ImageToggler
 			@imageContainer.css 'background-image', "url(#{photo.src})"
 		setTimeout @toggle,3000
 
-$("#clickme").click ->
-	goFullscreen 'fullscreen'
-
-$ ->
-	if !hasFullscreen 'fullscreen' then $("#clickme").hide()
-	toggler = new ImageToggler()
-
-
+#$ ->
+#	toggler = new ImageToggler()
 
 blockMove = (event) ->
   # Tell Safari not to move the window.
