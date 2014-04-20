@@ -1,3 +1,5 @@
+window.console ?=
+    log:->
 hasFullscreen = (id) ->
 	i = document.getElementById(id)
 	i.requestFullscreen || i.webkitRequestFullscreen || i.mozRequestFullScreen || i.msRequestFullscreen
