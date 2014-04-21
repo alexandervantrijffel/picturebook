@@ -67,9 +67,9 @@ module.exports = (grunt) ->
         cssmin:
             minify:
                 expand: true,
-                cwd: 'pub/styles/',
-                src: ['*.css', '!*.min.css'],
-                dest: 'pub/styles/',
+                cwd: 'pub/',
+                src: ['styles/**/*.css'],
+                dest: 'pub/',
                 ext: '.min.css'
 
         uglify:
@@ -79,7 +79,13 @@ module.exports = (grunt) ->
                     compress:
                         drop_console: true
                 files:
-                    'pub/scripts/picturebook.js.min': ["pub/scripts/uncompressed/**/*.js"]
+                    'pub/scripts/picturebook.js.min': [
+                        "pub/scripts/uncompressed/*.js"
+                        "pub/scripts/uncompressed/constants/*.js"
+                        "pub/scripts/uncompressed/factories/*.js"
+                        "pub/scripts/uncompressed/directives/*.js"
+                        "pub/scripts/uncompressed/controllers/*.js"
+                    ]
             jsdev: 
                 options:
                     compress: false
