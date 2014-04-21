@@ -54,7 +54,7 @@
             this.imageLoader.displayNext()
         $scope.$apply()
     
-    $scope.currentInterval = 4
+    $scope.currentInterval = 3
     $scope.$watch 'currentInterval', (newVal,oldVal) =>
         newInterval = 5000
         switch newVal
