@@ -1,8 +1,10 @@
-node_modules
+node_modules/
 config.local.*
 run.sh
 runmocha.sh
 *.js
+!*.min.js
 *.js.map
 *.css
+!*.min.css
 pub/scripts/uncompressed

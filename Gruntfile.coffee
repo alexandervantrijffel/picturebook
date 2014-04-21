@@ -79,7 +79,7 @@ module.exports = (grunt) ->
                     compress:
                         drop_console: true
                 files:
-                    'pub/scripts/picturebook.js.min': [
+                    'pub/scripts/picturebook.min.js': [
                         "pub/scripts/uncompressed/*.js"
                         "pub/scripts/uncompressed/constants/*.js"
                         "pub/scripts/uncompressed/factories/*.js"
@@ -92,7 +92,7 @@ module.exports = (grunt) ->
                     beautify: true
                     mangle: false
                 files:
-                    'pub/scripts/picturebook.js.min': [
+                    'pub/scripts/picturebook.min.js': [
                         "pub/scripts/uncompressed/*.js"
                         "pub/scripts/uncompressed/constants/*.js"
                         "pub/scripts/uncompressed/factories/*.js"
