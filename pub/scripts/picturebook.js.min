@@ -34,99 +34,6 @@ if (typeof console === "undefined") {
     };
 }
 
-if (typeof console === "undefined") {
-    window.console = function() {
-        return {
-            log: function() {}
-        };
-    };
-}
-
-var ImageToggler, blockMove, __bind = function(fn, me) {
-    return function() {
-        return fn.apply(me, arguments);
-    };
-};
-
-ImageToggler = ImageToggler = function() {
-    function ImageToggler() {
-        this.toggle = __bind(this.toggle, this);
-        this.load = __bind(this.load, this);
-        this.currentIndex = 0;
-        this.photosUrls = [ "http://pbs.twimg.com/media/BHHSn9jCIAEc9a9.jpg", "http://pbs.twimg.com/media/BPnnHJeCcAAbaxm.jpg", "http://upload.wikimedia.org/wikipedia/commons/3/37/Killerwhales_jumping.jpg", "http://pbs.twimg.com/media/BjLy5SbIgAAYJYt.jpg", "http://pbs.twimg.com/media/Bi-W93-IEAA5q4L.jpg" ];
-        this.photos = [];
-        this.imageContainer = $("#fullscreen");
-        this.image = $("#fullscreen img");
-        _.each(this.photosUrls, function(_this) {
-            return function(e) {
-                return _this.load(e);
-            };
-        }(this));
-        setTimeout(this.toggle, 1e3);
-    }
-    ImageToggler.prototype.load = function(src) {
-        var img1;
-        img1 = new Image();
-        img1.onload = function(_this) {
-            return function() {
-                console.log("img1 loaded", img1);
-                console.log("img width " + img1.width + " img height " + img1.height);
-                return _this.photos.push(img1);
-            };
-        }(this);
-        return img1.src = src;
-    };
-    ImageToggler.prototype.toggle = function() {
-        var imageRatio, photo, ratioDiff, resizeDiff, screenRatio, windowSize;
-        photo = this.photos[this.currentIndex];
-        console.log("toggling", photo);
-        if (this.photos.length - 1 > this.currentIndex) {
-            this.currentIndex++;
-        } else {
-            this.currentIndex = 0;
-        }
-        windowSize = {
-            x: $(document).width(),
-            y: $(document).height()
-        };
-        screenRatio = windowSize.x / windowSize.y;
-        imageRatio = photo.width / photo.height;
-        ratioDiff = (screenRatio / imageRatio).toFixed(2);
-        $("#screenRatio").text("Screen ratio: " + screenRatio.toFixed(2));
-        $("#imageRatio").text("Image ratio: " + imageRatio.toFixed(2));
-        $("#ratioDiff").text("Ratio diff: " + ratioDiff);
-        if (ratioDiff > 1.5) {
-            resizeDiff = 0;
-            if (photo.width > photo.height) {
-                resizeDiff = windowSize.x / photo.width;
-                console.log("landscape x " + photo.width + " y " + photo.height);
-                this.image.css("width", windowSize.x);
-                this.image.css("height", resizeDiff * photo.height);
-            } else {
-                console.log("portrait x " + photo.width + " y " + photo.height);
-                resizeDiff = windowSize.y / photo.height;
-                this.image.css("height", windowSize.y);
-                this.image.css("width", resizeDiff * photo.width);
-            }
-            $("#resizeDiff").text("Resize diff: " + resizeDiff.toFixed(2));
-            this.image.attr("src", photo.src);
-            this.imageContainer.css("background-image", "");
-            this.image.show();
-        } else {
-            $("#resizeDiff").text("");
-            this.image.attr("src", "");
-            this.image.hide();
-            this.imageContainer.css("background-image", "url(" + photo.src + ")");
-        }
-        return setTimeout(this.toggle, 3e3);
-    };
-    return ImageToggler;
-}();
-
-blockMove = function(event) {
-    return event.preventDefault();
-};
-
 angular.module("ngApp").constant("USER_ROLES", {
     all: "*",
     admin: "admin",
@@ -382,14 +289,48 @@ angular.module("ngApp").controller("LoginController", function($scope, $rootScop
 
 angular.module("ngApp").controller("StartController", function($scope, ImageLoader, $modal) {
     console.log("hello start controller");
+    $scope.imageContainer = $("#fullscreen");
+    $scope.image = $("#fullscreen img");
     $scope.keys = "";
     $scope.currentImage = {
         src: ""
     };
-    $scope.currentImageSrc = "";
-    $scope.imageLoader = ImageLoader.create(function(newImg) {
-        $scope.currentImage = newImg;
-        $scope.currentImageSrc = newImg.src;
+    $scope.imageLoader = ImageLoader.create(function(photo) {
+        var imageRatio, ratioDiff, resizeDiff, screenRatio, windowSize;
+        $scope.currentImage = photo;
+        windowSize = {
+            x: $(document).width(),
+            y: $(document).height()
+        };
+        screenRatio = windowSize.x / windowSize.y;
+        imageRatio = photo.width / photo.height;
+        ratioDiff = (screenRatio / imageRatio).toFixed(2);
+        $("#screenRatio").text("Screen ratio: " + screenRatio.toFixed(2));
+        $("#imageRatio").text("Image ratio: " + imageRatio.toFixed(2));
+        $("#ratioDiff").text("Ratio diff: " + ratioDiff);
+        if (ratioDiff > 1.5) {
+            resizeDiff = 0;
+            if (photo.width > photo.height) {
+                resizeDiff = windowSize.x / photo.width;
+                console.log("landscape x " + photo.width + " y " + photo.height);
+                $scope.image.css("width", windowSize.x);
+                $scope.image.css("height", resizeDiff * photo.height);
+            } else {
+                console.log("portrait x " + photo.width + " y " + photo.height);
+                resizeDiff = windowSize.y / photo.height;
+                $scope.image.css("height", windowSize.y);
+                $scope.image.css("width", resizeDiff * photo.width);
+            }
+            $("#resizeDiff").text("Resize diff: " + resizeDiff.toFixed(2));
+            $scope.image.attr("src", photo.src);
+            $scope.imageContainer.css("background-image", "");
+            $scope.image.show();
+        } else {
+            $("#resizeDiff").text("");
+            $scope.image.attr("src", "");
+            $scope.image.hide();
+            $scope.imageContainer.css("background-image", "url(" + photo.src + ")");
+        }
         return $scope.$apply();
     });
     $scope.hasFullScreen = function() {

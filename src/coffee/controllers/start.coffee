@@ -1,11 +1,41 @@
 ﻿angular.module('ngApp').controller 'StartController', ($scope, ImageLoader, $modal) ->
     console.log 'hello start controller'
+    $scope.imageContainer = $("#fullscreen")
+    $scope.image = $("#fullscreen img")
     $scope.keys = ''
     $scope.currentImage = { src: ''}
-    $scope.currentImageSrc = ""
-    $scope.imageLoader = ImageLoader.create (newImg) ->
-        $scope.currentImage = newImg
-        $scope.currentImageSrc = newImg.src
+    $scope.imageLoader = ImageLoader.create (photo) ->
+        $scope.currentImage = photo
+        windowSize = 
+            x:$(document).width()
+            y:$(document).height()
+        screenRatio = windowSize.x / windowSize.y
+        imageRatio = photo.width / photo.height
+        ratioDiff = (screenRatio / imageRatio).toFixed(2)
+        $("#screenRatio").text("Screen ratio: #{screenRatio.toFixed(2)}")
+        $("#imageRatio").text("Image ratio: #{imageRatio.toFixed(2)}")
+        $("#ratioDiff").text("Ratio diff: #{ratioDiff}")
+        if ratioDiff > 1.5
+            resizeDiff=0
+            if (photo.width > photo.height)
+                resizeDiff = windowSize.x / photo.width
+                console.log "landscape x #{photo.width} y #{photo.height}"
+                $scope.image.css 'width', windowSize.x
+                $scope.image.css 'height', resizeDiff * photo.height
+            else
+                console.log "portrait x #{photo.width} y #{photo.height}"
+                resizeDiff = windowSize.y / photo.height
+                $scope.image.css 'height', windowSize.y
+                $scope.image.css 'width', resizeDiff * photo.width
+            $("#resizeDiff").text("Resize diff: #{resizeDiff.toFixed(2)}")
+            $scope.image.attr 'src', photo.src
+            $scope.imageContainer.css 'background-image', ''
+            $scope.image.show()
+        else
+            $("#resizeDiff").text("")
+            $scope.image.attr 'src', ''
+            $scope.image.hide()
+            $scope.imageContainer.css 'background-image', "url(#{photo.src})"
         $scope.$apply()
     
     $scope.hasFullScreen = ->
@@ -51,8 +81,7 @@
                 loginModal = undefined
             , ->
                 console.log 'cancelled'
-                loginModal = undefined
-    
+                loginModal = undefined    
     $scope.goFullScreen = ->
         i = document.getElementById('fullscreen')
         if i.requestFullscreen
