@@ -4,8 +4,6 @@
         if interval <= 600
             console.error 'The interval must be at least 600 (ms)'
             return
-        console.log 'new interval ',interval
-        @interval = interval
         @resetTimeout()
     @create = (updateCurrentImage) =>
         @images = []
@@ -37,7 +35,6 @@
                 return $http.post "#{rootUrl}/api/pics/next", fromId: @images[@index]._id
                     .success (result) =>
                         # console.log 'result from next pics:',result
-                        console.log "retrieved #{result.images.length} pictures (total #{@images.length} images)."
                         _.each result.images, (i) =>
                             @load i
                     .error (data,status,headers,config) ->

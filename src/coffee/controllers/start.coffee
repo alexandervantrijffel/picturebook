@@ -1,5 +1,4 @@
 ﻿angular.module('ngApp').controller 'StartController', ($scope, ImageLoader, $modal) ->
-    console.log 'hello start controller'
     $scope.imageContainer = $("#fullscreen")
     $scope.image = $("#fullscreen img")
     $scope.keys = ''
@@ -37,6 +36,7 @@
             $scope.image.attr 'src', ''
             $scope.image.hide()
             $scope.imageContainer.css 'background-image', "url(#{photo.src})"
+        $scope.image.attr 'alt',photo.title
         $scope.$apply()
     
     $scope.hasFullScreen = ->
