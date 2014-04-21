@@ -9,6 +9,6 @@
         !!Session.userId
     isAuthorized: (authorizedRoles) ->
         if (!angular.isArray authorizedRoles) then authorizedRoles = [authorizedRoles]
-        this.isAuthenticated() && authorizedRoles.indexOf Session.userRole != -1
+        @isAuthenticated() && authorizedRoles.indexOf Session.userRole != -1
 
         

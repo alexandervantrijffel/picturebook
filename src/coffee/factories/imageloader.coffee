@@ -1,77 +1,76 @@
 ﻿angular.module('ngApp').service 'ImageLoader', ($http) ->
-    this.interval = 5000
-    this.updateInterval = (interval) =>
+    @interval = 5000
+    @updateInterval = (interval) =>
         if interval <= 600
             console.error 'The interval must be at least 600 (ms)'
             return
         console.log 'new interval ',interval
-        this.interval = interval
-        this.resetTimeout()
-    this.create = (updateCurrentImage) =>
-        this.images = []
-        this.index = -1
-        this.updateCurrentImage = updateCurrentImage
-        this.resetTimeout()
+        @interval = interval
+        @resetTimeout()
+    @create = (updateCurrentImage) =>
+        @images = []
+        @index = -1
+        @updateCurrentImage = updateCurrentImage
+        @resetTimeout()
+        @displayNext()
         this
-    this.resetTimeout = =>
-        if this.timer && this.timer > 0
-            clearTimeout this.timer
-        this.timer = setTimeout this.onTick, this.interval
-    this.add = (img) =>
+    @resetTimeout = =>
+        if @timer && @timer > 0
+            clearTimeout @timer
+        @timer = setTimeout @onTick, @interval
+    @add = (img) =>
         if (!angular.isArray img) then img = [img]
-        this.images.concat img
-    this.hasMoreImages = =>
-        this.index + 1 < this.images.length
-    this.displayNext = =>
-        if !this.hasMoreImages()
-            console.log 'retrieving images, timer', this.timer
-            if this.index == -1 || !this.images || this.images.length < this.index
-                $http.post 'http://localhost:3001/api/pics', {}
+        @images.concat img
+    @hasMoreImages = =>
+        @index + 1 < @images.length
+    @displayNext = =>
+        if !@hasMoreImages()
+            console.log 'retrieving images, timer', @timer
+            if @index == -1 || !@images || @images.length < @index
+                return $http.get 'http://localhost:3001/api/pics', {}
                     .success (result) =>
-                        @load result.images
+                        console.log 'result from load pics:',result
+                        _.each result.images, (i) =>
+                            @load i
                     .error (data,status,headers,config) ->
-                        console.log "#{status} failed to retrieve first images"
+                        return console.log "#{status} failed to retrieve first images"
             else
-                $http.post '/api/images/next', id: this.images[this.index].id
-                    .success (result) ->
-                        @load result.images
+                return $http.post 'http://localhost:3001/api/pics/next', fromId: @images[@index].id
+                    .success (result) =>
+                        console.log 'result from next pics:',result
+                        _.each result.images, (i) =>
+                            @load i
                     .error (data,status,headers,config) ->
-                        console.log "#{status} Failed to retrieve images."
-            # this.images.push 
+                        return console.log "#{status} Failed to retrieve images."
+            # @images.push 
             #     src: 'http://upload.wikimedia.org/wikipedia/commons/a/af/Bonsai_IMG_6426.jpg'
             #     id: 1
-            # this.images.push 
-            #     src: 'http://2'
+            # @images.push 
+            #     src: 'http://stackoverflow.com/users/769384/tkoomzaaskz'
             #     id: 2
-            # this.images.push 
-            #     src: 'http://3'
-            #     id: 3
-            # this.images.push 
-            #     src: 'http://4'
-            #     id: 4
-            # this.images.push 
-            #     src: 'http://5'
-            #     id: 5
-
-        # if this.index + 1 < this.images.length
-        #     this.index++
-        # else
-        #     this.index = 0;
-        # console.log "displaying index #{this.index}"
-        # this.updateCurrentImage this.images[this.index]
-    this.displayPrevious = =>
-        if this.index > 0
-            this.index--
-        console.log "displaying index #{this.index}"
-        this.updateCurrentImage this.images[this.index]
-    this.onTick = =>
-        this.displayNext()
-        this.timer = setTimeout this.onTick, this.interval
-    this.load = (imgsrc) =>
+        if @images.length == 0 then return
+        if @index + 1 < @images.length
+            @index++
+        else
+            @index = 0;
+        console.log "displaying index #{@index}"
+        @updateCurrentImage @images[@index]
+    @displayPrevious = =>
+        if @index > 0
+            @index--
+        console.log "displaying index #{@index}"
+        @updateCurrentImage @images[@index]
+    @onTick = =>
+        @displayNext()
+        @timer = setTimeout @onTick, @interval
+    @load = (imgsrc) =>
+        console.log 'loading image',imgsrc
         img1 = new Image()
         img1.onload = =>
-            console.log 'img1 loaded',imgl
-            console.log "img width #{img1.width} img height #{img1.height}"
-            @images.push img1.src
+            console.log "img loaded with width #{img1.width} img height #{img1.height}"
+            @images.push img1
+            if @images.length == 1 then @displayNext()
         img1.src = imgsrc.src
+        img1._id = imgsrc._id
+        img1.postedAt = imgsrc.postedAt
     this

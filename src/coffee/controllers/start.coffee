@@ -4,7 +4,6 @@
     $scope.currentImage = { src: ''}
     $scope.currentImageSrc = ""
     $scope.imageLoader = ImageLoader.create (newImg) ->
-        console.log 'currentImageSrc:',newImg.src
         $scope.currentImage = newImg
         $scope.currentImageSrc = newImg.src
         $scope.$apply()
@@ -24,7 +23,7 @@
             $scope.imageLoader.displayNext()
         $scope.$apply()
     
-    $scope.currentInterval = 3
+    $scope.currentInterval = 4
     $scope.$watch 'currentInterval', (newVal,oldVal) ->
         newInterval = 5000
         switch newVal

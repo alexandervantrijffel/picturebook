@@ -25,23 +25,10 @@ module.exports = (grunt) ->
                     message: 'Compiled sass'
 
         watch:
-            css: {
-                files: 'pub/styles/**/*.css',
-                options: {
+            livereload: {
+                options:
                     livereload: true
-                }
-            }
-            js: {
-                files: 'pub/scripts/**/*.min.js',
-                options: {
-                    livereload: true
-                }
-            }
-            html: {
-                files: 'pub/**/*.html',
-                options: {
-                    livereload: true
-                }
+                files: ["pub/**/*"]
             }
             coffee:
                 files: 'src/coffee/**/*.coffee',

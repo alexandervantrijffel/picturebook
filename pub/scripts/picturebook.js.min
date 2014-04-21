@@ -179,6 +179,7 @@ angular.module("ngApp").service("ImageLoader", function($http) {
             _this.index = -1;
             _this.updateCurrentImage = updateCurrentImage;
             _this.resetTimeout();
+            _this.displayNext();
             return _this;
         };
     }(this);
@@ -208,21 +209,37 @@ angular.module("ngApp").service("ImageLoader", function($http) {
             if (!_this.hasMoreImages()) {
                 console.log("retrieving images, timer", _this.timer);
                 if (_this.index === -1 || !_this.images || _this.images.length < _this.index) {
-                    return $http.post("http://localhost:3001/api/pics", {}).success(function(result) {
-                        return _this.load(result.images);
+                    return $http.get("http://localhost:3001/api/pics", {}).success(function(result) {
+                        console.log("result from load pics:", result);
+                        return _.each(result.images, function(i) {
+                            return _this.load(i);
+                        });
                     }).error(function(data, status, headers, config) {
                         return console.log("" + status + " failed to retrieve first images");
                     });
                 } else {
-                    return $http.post("/api/images/next", {
-                        id: _this.images[_this.index].id
+                    return $http.post("http://localhost:3001/api/pics/next", {
+                        fromId: _this.images[_this.index].id
                     }).success(function(result) {
-                        return this.load(result.images);
+                        console.log("result from next pics:", result);
+                        return _.each(result.images, function(i) {
+                            return _this.load(i);
+                        });
                     }).error(function(data, status, headers, config) {
                         return console.log("" + status + " Failed to retrieve images.");
                     });
                 }
             }
+            if (_this.images.length === 0) {
+                return;
+            }
+            if (_this.index + 1 < _this.images.length) {
+                _this.index++;
+            } else {
+                _this.index = 0;
+            }
+            console.log("displaying index " + _this.index);
+            return _this.updateCurrentImage(_this.images[_this.index]);
         };
     }(this);
     this.displayPrevious = function(_this) {
@@ -243,13 +260,18 @@ angular.module("ngApp").service("ImageLoader", function($http) {
     this.load = function(_this) {
         return function(imgsrc) {
             var img1;
+            console.log("loading image", imgsrc);
             img1 = new Image();
             img1.onload = function() {
-                console.log("img1 loaded", imgl);
-                console.log("img width " + img1.width + " img height " + img1.height);
-                return _this.images.push(img1.src);
+                console.log("img loaded with width " + img1.width + " img height " + img1.height);
+                _this.images.push(img1);
+                if (_this.images.length === 1) {
+                    return _this.displayNext();
+                }
             };
-            return img1.src = imgsrc.src;
+            img1.src = imgsrc.src;
+            img1._id = imgsrc._id;
+            return img1.postedAt = imgsrc.postedAt;
         };
     }(this);
     return this;
@@ -366,7 +388,6 @@ angular.module("ngApp").controller("StartController", function($scope, ImageLoad
     };
     $scope.currentImageSrc = "";
     $scope.imageLoader = ImageLoader.create(function(newImg) {
-        console.log("currentImageSrc:", newImg.src);
         $scope.currentImage = newImg;
         $scope.currentImageSrc = newImg.src;
         return $scope.$apply();
@@ -389,7 +410,7 @@ angular.module("ngApp").controller("StartController", function($scope, ImageLoad
         }
         return $scope.$apply();
     });
-    $scope.currentInterval = 3;
+    $scope.currentInterval = 4;
     $scope.$watch("currentInterval", function(newVal, oldVal) {
         var newInterval;
         newInterval = 5e3;
