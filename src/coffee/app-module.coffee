@@ -8,7 +8,7 @@
             .html5Mode(false)
             .hashPrefix("!")
         delete $httpProvider.defaults.headers.common['X-Requested-With']
-    .value 'rootUrl', if window.location.host.toUpperCase() == "LOCALHOST:8080" then 'http://localhost:3001' else ''
+    .value 'rootUrl', if window.location.host.toUpperCase() == "LOCALHOST:8080" then 'http://localhost:3001' else 'http://fullscreen.ws'
     .run ($rootScope, AUTH_EVENTS, AuthService) ->
         #$rootScope.$on '$locationChangeStart', (event, next, current) ->
         $rootScope.$on '$routeChangeStart', (event, next, current) ->
