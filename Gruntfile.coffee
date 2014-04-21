@@ -75,21 +75,20 @@ module.exports = (grunt) ->
         uglify:
             dist:
                 options:
-                    banner: "<%= meta.banner %>"
                     compress:
                         drop_console: true
                 files:
-                    'pub/scripts/picturebook.min.js': [
+                    "pub/scripts/picturebook.min.js": [
                         "pub/scripts/uncompressed/*.js"
                         "pub/scripts/uncompressed/constants/*.js"
                         "pub/scripts/uncompressed/factories/*.js"
                         "pub/scripts/uncompressed/directives/*.js"
-                        "pub/scripts/uncompressed/controllers/*.js"
+                        "pub/scripts/uncompressed/controllers/*.js"                        
                     ]
             jsdev: 
                 options:
                     compress: false
-                    beautify: true
+                    #beautify: true
                     mangle: false
                 files:
                     'pub/scripts/picturebook.min.js': [
