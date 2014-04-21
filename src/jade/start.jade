@@ -1,40 +1,53 @@
-div#buttonbar
-        button#clickme(ng-click="goFullScreen()") Go fullscreen
-div#infobar
-    div#screenRatio Loading...
-    div#imageRatio
-    div#ratioDiff
-    div#resizeDiff
+//- div#buttonbar
+//- div#angulartmp
+//-     div(ng-if="!currentUser")
+//-         div
+//-             button(data-ng-click="showLogin()")
+//-     div(ng-if="currentUser")
+//-         div Hello {{currentUser.name}}
+//-     a(href="#!/") Home
+//-     a(href="#!/about") About        
+div#infobar(data-ng-if="showRatios")
+    div#title {{imageDetails.title}}
+    div#screenRatio {{imageDetails.screenRatio}}
+    div#imageRatio {{imageDetails.imageRatio}}
+    div#ratioDiff {{imageDetails.ratioDiff}}
+    div#resizeDiff {{imageDetails.resizeDiff}}
 div#fullscreen
     img(src="{{currentImage.src}}")
-div(id="controlbar")
-    ul
-        li
-            div Current: {{currentImage.src}}
-            div Keys: {{keys}}
-        li(id ='slider-container')
-            slider(data-ng-model="currentInterval" 
-                floor="1" ceiling="5" step="1" precision="0" 
-                translate-fn="translateInterval")
-        li
-            a(href="" data-ng-click="showAddImage()" id="addImageButton" title="Add new image")
-                i(class="fa fa-plus-square")
-script(id='AddImage.html' type='text/ng-template')
-    .modal-header
-        h3 Add image
-            span.closebtn(data-ng-click='cancel()')
-    .modal-body
-      form#addImageForm(ng-submit='add(image)', novalidate='novalidate')
-        ul.nav.nav-tabs
-          li.active
-            a(href='#fromurl', data-toggle='tab') Paste image URL
-          li
-            a(href='#upload', data-toggle='tab') Upload an image
-        .tab-content
-          #fromurl.tab-pane.active
-            label(for='imageUrl') Address:
-            input#imageUrl(type='text', ng-model='image.imageUrl', placeholder='http://', focus-me='focusImageUrl')
-            button(type='submit') Add
-            div(data-ng-if='addResult') {{addResult}}
-          #upload.tab-pane
-            | Upload now!
+    div(id="controlbar")
+        ul
+            li(id ='slider-container')
+                slider(data-ng-model="currentInterval" 
+                    floor="1" ceiling="5" step="1" precision="0" 
+                    translate-fn="translateInterval")
+            li
+                a(href="" data-ng-click="toggleShowDetails()" id="toggleShowDetails" title="Show image details")
+                    i(class="fa fa-info-circle")
+            li
+                a(href="" data-ng-click="showAddImage()" id="addImageButton" title="Add new image")
+                    i(class="fa fa-plus-square")
+            li(data-ng-if="!isInFullScreen")
+                div#enterfullscreen(data-ng-click="goFullScreen()", title="Go full screen")
+    script(id='AddImage.html' type='text/ng-template')
+        .modal-header
+            h3 Add image
+                span.closebtn(data-ng-click='closeModal()', title="Close")
+        .modal-body
+          form#addImageForm(ng-submit='add(image)', novalidate='novalidate')
+            ul.nav.nav-tabs
+              li.active
+                a(href='#fromurl', data-toggle='tab') Paste image URL
+              li
+                a(href='#upload', data-toggle='tab') Upload an image
+            .tab-content
+              #fromurl.tab-pane.active
+                label(for='imageUrl') Address:
+                input#imageUrl(type='text', ng-model='image.imageUrl', placeholder='http://', focus-me='focusImageUrl')
+                label(for='title') Title (optional):
+                input#title(type='text', ng-model='image.title')
+                label
+                button(type='submit') Add
+                div(data-ng-if='addResult') {{addResult}}
+              #upload.tab-pane
+                | Upload now!

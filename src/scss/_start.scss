@@ -1,10 +1,12 @@
 .closebtn {
     position: absolute;
-    right: 0;
+    right: 5px;
+    top: 5px;
     width: 40px;
-    height: 12px;
+    height: 40px;
     background: url("../img/close.png");
     cursor: pointer;
+    z-index: 0;
 }
 #angulartmp{
     position: absolute;
@@ -21,7 +23,58 @@
         font-weight: bold;
     }
 }
-
-#imageUrl {
-    width: 400px;
+#fromurl {
+    label {
+        display: inline-block;
+        width: 120px;
+    }
+    input {
+        padding: 3px;
+        margin: 3px;
+    }
+    button {
+        margin: 3px;
+    }
+    #imageUrl {
+        width: 400px;
+    }
+    #title {
+        width: 400px;
+    }    
+}
+#buttonbar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+}
+#fullscreen {
+    // background-image: url('../img/Killerwhales_jumping.jpg');
+    background-repeat: none;
+    background-position: center center;
+    background-size: cover;
+    height: 100vh;
+    width: 100%;
+    border: 1px solid black;
+    background-color: #222222;
+    text-align: center;
+    vertical-align: middle;
+    img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+#infobar {
+    @extend .alpha60;
+    @extend .minimalrounded;
+    position: absolute;
+    z-index: 100;
+    top: 25px;
+    left: 10px;
+    border: 1px solid #444444;
+    text-align: left;
+    padding: 6px;
+    color: #a0a0a0;
+    font-size: 0.8em;
 }

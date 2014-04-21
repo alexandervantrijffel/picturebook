@@ -11,7 +11,7 @@ angular.module("ngApp", [ "ngRoute", "ui.bootstrap", "vr.directives.slider" ]).c
     });
     $locationProvider.html5Mode(false).hashPrefix("!");
     return delete $httpProvider.defaults.headers.common["X-Requested-With"];
-}).value("rootUrl", "").run(function($rootScope, AUTH_EVENTS, AuthService) {
+}).value("rootUrl", "http://localhost:3001").run(function($rootScope, AUTH_EVENTS, AuthService) {
     return $rootScope.$on("$routeChangeStart", function(event, next, current) {
         if (next.authorizedRoles) {
             if (!AuthService.isAuthorized(next.authorizedRoles)) {
@@ -67,7 +67,7 @@ angular.module("ngApp").factory("AuthService", function($http, Session) {
     };
 });
 
-angular.module("ngApp").service("ImageLoader", function($http) {
+angular.module("ngApp").service("ImageLoader", function($http, rootUrl) {
     this.interval = 5e3;
     this.updateInterval = function(_this) {
         return function(interval) {
@@ -114,10 +114,8 @@ angular.module("ngApp").service("ImageLoader", function($http) {
     this.displayNext = function(_this) {
         return function() {
             if (!_this.hasMoreImages()) {
-                console.log("retrieving images, timer", _this.timer);
                 if (_this.index === -1 || !_this.images || _this.images.length < _this.index) {
-                    return $http.get("http://localhost:3001/api/pics", {}).success(function(result) {
-                        console.log("result from load pics:", result);
+                    return $http.get("" + rootUrl + "/api/pics", {}).success(function(result) {
                         return _.each(result.images, function(i) {
                             return _this.load(i);
                         });
@@ -125,10 +123,10 @@ angular.module("ngApp").service("ImageLoader", function($http) {
                         return console.log("" + status + " failed to retrieve first images");
                     });
                 } else {
-                    return $http.post("http://localhost:3001/api/pics/next", {
-                        fromId: _this.images[_this.index].id
+                    return $http.post("" + rootUrl + "/api/pics/next", {
+                        fromId: _this.images[_this.index]._id
                     }).success(function(result) {
-                        console.log("result from next pics:", result);
+                        console.log("retrieved " + result.images.length + " pictures (total " + _this.images.length + " images).");
                         return _.each(result.images, function(i) {
                             return _this.load(i);
                         });
@@ -145,7 +143,6 @@ angular.module("ngApp").service("ImageLoader", function($http) {
             } else {
                 _this.index = 0;
             }
-            console.log("displaying index " + _this.index);
             return _this.updateCurrentImage(_this.images[_this.index]);
         };
     }(this);
@@ -154,7 +151,6 @@ angular.module("ngApp").service("ImageLoader", function($http) {
             if (_this.index > 0) {
                 _this.index--;
             }
-            console.log("displaying index " + _this.index);
             return _this.updateCurrentImage(_this.images[_this.index]);
         };
     }(this);
@@ -166,19 +162,19 @@ angular.module("ngApp").service("ImageLoader", function($http) {
     }(this);
     this.load = function(_this) {
         return function(imgsrc) {
-            var img1;
-            console.log("loading image", imgsrc);
+            var img1, p, _results;
             img1 = new Image();
             img1.onload = function() {
-                console.log("img loaded with width " + img1.width + " img height " + img1.height);
                 _this.images.push(img1);
                 if (_this.images.length === 1) {
                     return _this.displayNext();
                 }
             };
-            img1.src = imgsrc.src;
-            img1._id = imgsrc._id;
-            return img1.postedAt = imgsrc.postedAt;
+            _results = [];
+            for (p in imgsrc) {
+                _results.push(img1[p] = imgsrc[p]);
+            }
+            return _results;
         };
     }(this);
     return this;
@@ -223,23 +219,29 @@ angular.module("ngApp").controller("AboutController", function($scope) {
     return console.log("Hello about");
 });
 
-angular.module("ngApp").controller("AddImageController", function($scope, $http) {
+angular.module("ngApp").controller("AddImageController", function($scope, $http, rootUrl) {
     $scope.focusImageUrl = true;
     $scope.addResult = "";
+    $scope.closeModal = function() {
+        return $scope.$close();
+    };
     return $scope.add = function(_this) {
         return function(image) {
             if (!image || image.imageUrl.indexOf("http://") !== 0 && image.imageUrl.indexOf("https://") !== 0) {
                 return $scope.addResult = "Please enter an address starting with http:// or https://";
-            } else if (image.imageUrl) {
-                return $http.post("/api/images/add", {
-                    url: image.imageUrl
-                }).success(function(result) {
-                    angular.element($("#addImageForm")).scope().image.imageUrl = "";
-                    return $scope.addResult = "Image added successfully.";
-                }).error(function(data, status, headers, config) {
-                    return $scope.addResult = "" + status + " Failed to add the image.";
-                });
             }
+            return $http.post("" + rootUrl + "/api/pics", {
+                src: image.imageUrl,
+                title: image.title
+            }).success(function(result) {
+                var scopeImg;
+                scopeImg = angular.element($("#addImageForm")).scope().image;
+                scopeImg.imageUrl = "";
+                scopeImg.title = "";
+                return $scope.addResult = "Image added successfully.";
+            }).error(function(data, status, headers, config) {
+                return $scope.addResult = "" + status + " Failed to add the image.";
+            });
         };
     }(this);
 });
@@ -295,7 +297,7 @@ angular.module("ngApp").controller("StartController", function($scope, ImageLoad
     $scope.currentImage = {
         src: ""
     };
-    $scope.imageLoader = ImageLoader.create(function(photo) {
+    this.imageLoader = ImageLoader.create(function(photo) {
         var imageRatio, ratioDiff, resizeDiff, screenRatio, windowSize;
         $scope.currentImage = photo;
         windowSize = {
@@ -305,9 +307,10 @@ angular.module("ngApp").controller("StartController", function($scope, ImageLoad
         screenRatio = windowSize.x / windowSize.y;
         imageRatio = photo.width / photo.height;
         ratioDiff = (screenRatio / imageRatio).toFixed(2);
-        $("#screenRatio").text("Screen ratio: " + screenRatio.toFixed(2));
-        $("#imageRatio").text("Image ratio: " + imageRatio.toFixed(2));
-        $("#ratioDiff").text("Ratio diff: " + ratioDiff);
+        $scope.imageDetails.title = photo.title.length ? photo.title : "";
+        $scope.imageDetails.screenRatio = "Screen ratio: " + screenRatio.toFixed(2);
+        $scope.imageDetails.imageRatio = "Image ratio: " + imageRatio.toFixed(2);
+        $scope.imageDetails.ratioDiff = "Ratio diff: " + ratioDiff;
         if (ratioDiff > 1.5) {
             resizeDiff = 0;
             if (photo.width > photo.height) {
@@ -321,12 +324,12 @@ angular.module("ngApp").controller("StartController", function($scope, ImageLoad
                 $scope.image.css("height", windowSize.y);
                 $scope.image.css("width", resizeDiff * photo.width);
             }
-            $("#resizeDiff").text("Resize diff: " + resizeDiff.toFixed(2));
+            $scope.imageDetails.resizeDiff = "Resize diff: " + resizeDiff.toFixed(2);
             $scope.image.attr("src", photo.src);
             $scope.imageContainer.css("background-image", "");
             $scope.image.show();
         } else {
-            $("#resizeDiff").text("");
+            $scope.imageDetails.resizeDiff = "";
             $scope.image.attr("src", "");
             $scope.image.hide();
             $scope.imageContainer.css("background-image", "url(" + photo.src + ")");
@@ -339,44 +342,48 @@ angular.module("ngApp").controller("StartController", function($scope, ImageLoad
         return i.requestFullscreen || i.webkitRequestFullscreen || i.mozRequestFullScreen || i.msRequestFullscreen;
     };
     if (!$scope.hasFullScreen()) {
-        $("#clickme").hide();
+        $("#enterfullscreen").hide();
     }
-    $("body").keyup(function(e) {
-        if (e.keyCode === 37) {
-            $scope.keys += "LEFT ";
-            $scope.imageLoader.displayPrevious();
-        } else if (e.keyCode === 39) {
-            $scope.keys += "RIGHT ";
-            $scope.imageLoader.displayNext();
-        }
-        return $scope.$apply();
-    });
+    $("body").keyup(function(_this) {
+        return function(e) {
+            if (e.keyCode === 37) {
+                $scope.keys += "LEFT ";
+                _this.imageLoader.displayPrevious();
+            } else if (e.keyCode === 39) {
+                $scope.keys += "RIGHT ";
+                _this.imageLoader.displayNext();
+            }
+            return $scope.$apply();
+        };
+    }(this));
     $scope.currentInterval = 4;
-    $scope.$watch("currentInterval", function(newVal, oldVal) {
-        var newInterval;
-        newInterval = 5e3;
-        switch (newVal) {
-          case 1:
-            newInterval = 4e4;
-            break;
+    $scope.$watch("currentInterval", function(_this) {
+        return function(newVal, oldVal) {
+            var newInterval;
+            newInterval = 5e3;
+            switch (newVal) {
+              case 1:
+                newInterval = 4e4;
+                break;
 
-          case 2:
-            newInterval = 15e3;
-            break;
+              case 2:
+                newInterval = 2e4;
+                break;
 
-          case 3:
-            newInterval = 1e4;
-            break;
+              case 3:
+                newInterval = 1e4;
+                break;
 
-          case 4:
-            newInterval = 4e3;
-            break;
+              case 4:
+                newInterval = 4e3;
+                break;
 
-          case 5:
-            newInterval = 1500;
-        }
-        return $scope.imageLoader.updateInterval(newInterval);
-    });
+              case 5:
+                newInterval = 1500;
+            }
+            return _this.imageLoader.updateInterval(newInterval);
+        };
+    }(this));
     $scope.translateInterval = function(val) {
         switch (val) {
           case "1":
@@ -411,21 +418,67 @@ angular.module("ngApp").controller("StartController", function($scope, ImageLoad
             return loginModal = void 0;
         });
     };
-    return $scope.goFullScreen = function() {
-        var i;
-        i = document.getElementById("fullscreen");
-        if (i.requestFullscreen) {
-            console.log("1 go fullscreen");
-            return i.requestFullscreen();
-        } else if (i.webkitRequestFullscreen) {
-            console.log("webkit go fullscreen");
-            return i.webkitRequestFullscreen();
-        } else if (i.mozRequestFullScreen) {
-            console.log("moz go fullscreen");
-            return i.mozRequestFullScreen();
-        } else if (i.msRequestFullscreen) {
-            console.log("ms go fullscreen");
-            return i.msRequestFullscreen();
-        }
+    this.elementToFullScreen = function(_this) {
+        return function(i) {
+            if (i.requestFullscreen) {
+                console.log("1 go fullscreen");
+                return i.requestFullscreen();
+            } else if (i.webkitRequestFullscreen) {
+                console.log("webkit go fullscreen");
+                return i.webkitRequestFullscreen();
+            } else if (i.mozRequestFullScreen) {
+                console.log("moz go fullscreen");
+                return i.mozRequestFullScreen();
+            } else if (i.msRequestFullscreen) {
+                console.log("ms go fullscreen");
+                return i.msRequestFullscreen();
+            }
+        };
+    }(this);
+    $scope.goFullScreen = function(_this) {
+        return function() {
+            return _this.elementToFullScreen(document.getElementById("fullscreen"));
+        };
+    }(this);
+    $scope.imageDetails = {
+        title: "Loading..",
+        screenRatio: "",
+        imageRatio: "",
+        resizeDiff: "",
+        ratioDiff: ""
     };
+    $scope.showRatios = false;
+    $scope.toggleShowDetails = function() {
+        return $scope.showRatios = !$scope.showRatios;
+    };
+    this.showControlBar = function(_this) {
+        return function(e) {
+            $(window).unbind("mousemove", _this.showControlBar);
+            $(window).unbind("touchstart", _this.showControlBar);
+            $("#controlbar").fadeIn();
+            return _this.fadeControlBar();
+        };
+    }(this);
+    $scope.isInFullScreen = false;
+    this.fullScreenChangeHandler = function(_this) {
+        return function() {
+            return $scope.isInFullScreen = void 0 !== (document.fullScreenElement || document.webkitCurrentFullScreenElement || document.mozFullScreenElement);
+        };
+    }(this);
+    document.addEventListener("fullscreenchange", this.fullScreenChangeHandler, false);
+    document.addEventListener("webkitfullscreenchange", this.fullScreenChangeHandler, false);
+    document.addEventListener("mozfullscreenchange", this.fullScreenChangeHandler, false);
+    this.fadeControlBar = function(_this) {
+        return function() {
+            if (_this.timer && _this.timer > 0) {
+                clearTimeout(_this.timer);
+            }
+            return _this.timer = setTimeout(function() {
+                $("#controlbar").fadeOut(1e3);
+                $(window).mousemove(_this.showControlBar);
+                return $(window).bind("touchstart", _this.showControlBar);
+            }, _this.isInFullScreen ? 2e3 : 12e3);
+        };
+    }(this);
+    return this.fadeControlBar();
 });

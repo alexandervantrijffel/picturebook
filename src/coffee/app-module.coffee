@@ -8,7 +8,7 @@
             .html5Mode(false)
             .hashPrefix("!")
         delete $httpProvider.defaults.headers.common['X-Requested-With']
-    .value 'rootUrl', ''
+    .value 'rootUrl', 'http://localhost:3001'
     .run ($rootScope, AUTH_EVENTS, AuthService) ->
         #$rootScope.$on '$locationChangeStart', (event, next, current) ->
         $rootScope.$on '$routeChangeStart', (event, next, current) ->

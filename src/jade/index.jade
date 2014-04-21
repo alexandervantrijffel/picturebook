@@ -1,12 +1,4 @@
 extends layout
 
-block content
-    div#angulartmp
-        div(ng-if="!currentUser")
-            div
-                button(data-ng-click="showLogin()")
-        div(ng-if="currentUser")
-            div Hello {{currentUser.name}}
-        a(href="#!/") Home
-        a(href="#!/about") About    
+block content    
     div(data-ng-view)

@@ -1,3 +1,59 @@
+html {
+  color: #000;
+  background: #FFF; }
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td {
+  margin: 0;
+  padding: 0; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+fieldset, img {
+  border: 0; }
+
+address, caption, cite, code, dfn, em, strong, th, var {
+  font-style: normal;
+  font-weight: normal; }
+
+ol, ul {
+  list-style: none; }
+
+caption, th {
+  text-align: left; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: 100%;
+  font-weight: normal; }
+
+q:before, q:after {
+  content: ''; }
+
+abbr, acronym {
+  border: 0;
+  font-variant: normal; }
+
+sup {
+  vertical-align: text-top; }
+
+sub {
+  vertical-align: text-bottom; }
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit; }
+
+input, textarea, select {
+  *font-size: 100%; }
+
+legend {
+  color: #000; }
+
+#yui3-css-stamp.cssreset {
+  display: none; }
+
 @import url(//fonts.googleapis.com/css?family=Open+Sans:600,400);
 @import url(//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css);
 @import url(//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
@@ -29,7 +85,7 @@ h2, .mh2, .centralcontainer .title {
   display: table;
   clear: both; }
 
-.alpha60, #infobar, #jumbotron div span {
+.alpha60, #infobar {
   /* Fallback for web browsers that don't support RGBa */
   background-color: #212121;
   /* RGBa with 0.6 opacity */
@@ -39,7 +95,7 @@ h2, .mh2, .centralcontainer .title {
   /* For IE 8*/
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99333333, endColorstr=#99333333)"; }
 
-.minimalrounded, #infobar, #jumbotron div span {
+.minimalrounded, #infobar {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
@@ -183,138 +239,6 @@ div#pagecontent {
 #scrolltotop {
   background-color: #000 !important; }
 
-#buttonbar {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 100; }
-
-#fullscreen {
-  background-repeat: none;
-  background-position: center center;
-  background-size: cover;
-  height: 100vh;
-  width: 100%;
-  border: 1px solid black;
-  background-color: #222222;
-  text-align: center;
-  vertical-align: middle; }
-  #fullscreen img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto; }
-
-#infobar {
-  position: absolute;
-  z-index: 100;
-  top: 45px;
-  left: 10px;
-  border: 1px solid #444444;
-  text-align: left;
-  padding: 6px;
-  color: #a0a0a0;
-  font-size: 0.8em; }
-
-#jumbotron {
-  background: url('../img/rotterdam.jpg') no-repeat right center;
-  -moz-background-size: cover;
-  -webkit-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  width: 100%;
-  height: 100%;
-  height: 400px;
-  margin: 0 0 48px 0; }
-  #jumbotron div div {
-    float: left;
-    width: 50%;
-    max-width: 440px;
-    position: relative; }
-    @media only screen and (max-width: 746px) {
-      #jumbotron div div {
-        float: none;
-        width: 100%;
-        max-width: 100%; } }
-  #jumbotron div span {
-    color: #eeeeee;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
-    padding: 8px 24px;
-    display: inline-block;
-    position: relative; }
-    #jumbotron div span#companytitle {
-      top: 80px; }
-      #jumbotron div span#companytitle h1 {
-        font-size: 4em;
-        display: inline; }
-    #jumbotron div span#companyheader {
-      top: 102px;
-      left: 200px;
-      width: 386px\9;
-      max-width: 386px;
-      text-align: center; }
-      @media only screen and (max-width: 1202px) {
-        #jumbotron div span#companyheader {
-          left: 0; } }
-      @media only screen and (max-width: 746px) {
-        #jumbotron div span#companyheader {
-          font-size: 1em; } }
-      #jumbotron div span#companyheader h2 {
-        display: inline-block; }
-    #jumbotron div span#companysubtitle {
-      top: 120px;
-      text-align: left;
-      left: 200px;
-      width: 386px\9;
-      max-width: 386px;
-      text-align: center; }
-      @media only screen and (max-width: 1202px) {
-        #jumbotron div span#companysubtitle {
-          left: 0; } }
-      @media only screen and (max-width: 746px) {
-        #jumbotron div span#companysubtitle {
-          font-size: 1em; } }
-      #jumbotron div span#companysubtitle h2 {
-        display: inline-block; }
-
-#headlines #headerwrap {
-  text-align: left; }
-#headlines h3 {
-  display: inline-block;
-  text-align: left;
-  margin-bottom: 12px;
-  line-height: 2em;
-  border-bottom: 2px solid #40B1B1; }
-#headlines #servicewrap {
-  margin: 0 auto; }
-
-.service {
-  float: left;
-  width: 370px\9;
-  max-width: 370px;
-  margin: 15px 0;
-  padding: 0 12px; }
-  .service > div {
-    float: left;
-    width: 292px\9;
-    max-width: 292px;
-    text-align: left; }
-  .service i {
-    width: 48px !important;
-    content: "";
-    display: block;
-    float: left;
-    color: #40B1B1;
-    -webkit-transition: all 0.4s ease-in-out;
-    -moz-transition: all 0.4s ease-in-out;
-    -o-transition: all 0.4s ease-in-out;
-    transition: all 0.4s ease-in-out; }
-  .service span {
-    display: inline-block;
-    top: -3px;
-    font-size: 1.4em;
-    position: relative;
-    font-weight: 500; }
-
 @media screen and (max-width: 1202px) {
   .service {
     max-width: 276px; }
@@ -346,11 +270,13 @@ div#pagecontent {
 
 .closebtn {
   position: absolute;
-  right: 0;
+  right: 5px;
+  top: 5px;
   width: 40px;
-  height: 12px;
+  height: 40px;
   background: url("../img/close.png");
-  cursor: pointer; }
+  cursor: pointer;
+  z-index: 0; }
 
 #angulartmp {
   position: absolute;
@@ -365,31 +291,88 @@ div#pagecontent {
     color: #000;
     font-weight: bold; }
 
-#imageUrl {
+#fromurl label {
+  display: inline-block;
+  width: 120px; }
+#fromurl input {
+  padding: 3px;
+  margin: 3px; }
+#fromurl button {
+  margin: 3px; }
+#fromurl #imageUrl {
   width: 400px; }
+#fromurl #title {
+  width: 400px; }
+
+#buttonbar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 100; }
+
+#fullscreen {
+  background-repeat: none;
+  background-position: center center;
+  background-size: cover;
+  height: 100vh;
+  width: 100%;
+  border: 1px solid black;
+  background-color: #222222;
+  text-align: center;
+  vertical-align: middle; }
+  #fullscreen img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto; }
+
+#infobar {
+  position: absolute;
+  z-index: 100;
+  top: 25px;
+  left: 10px;
+  border: 1px solid #444444;
+  text-align: left;
+  padding: 6px;
+  color: #a0a0a0;
+  font-size: 0.8em; }
 
 #controlbar {
   position: absolute;
-  bottom: 60px;
+  bottom: 12px;
   height: 40px;
   width: 100%;
-  border: 1px solid #aaa;
-  background-color: rgba(0, 0, 0, 0.2); }
+  padding: 0 6px 0 6px;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #E0E0E0;
+  clear: both;
+  z-index: 999; }
   #controlbar > div {
     float: left; }
   #controlbar ul {
+    float: right;
     margin: 0;
-    padding: 0;
-    clear: both; }
+    padding: 0; }
     #controlbar ul li {
       display: inline-block;
       list-style-type: none;
       float: left;
       margin-right: 20px;
       vertical-align: middle; }
-  #controlbar #addImageButton {
+  #controlbar button {
+    color: #303030;
+    margin-top: 6px; }
+  #controlbar a {
     display: inline-block;
-    margin-top: 12px; }
+    margin-top: 8px; }
+  #controlbar #toggleShowDetails {
+    color: #a0a0a0; }
+  #controlbar #enterfullscreen {
+    background: no-repeat url("../img/player-common-vfl.webp") -34px -983px;
+    width: 32px;
+    height: 32px;
+    margin: 3px 0 3px 0; }
+    #controlbar #enterfullscreen:hover {
+      cursor: pointer; }
   #controlbar slider {
     display: inline-block;
     position: relative;
@@ -459,8 +442,7 @@ div#pagecontent {
         top: -22px;
         padding: 1px 3px 1px 3px;
         font-size: 0.7em;
-        font-family: sans-serif; }
+        font-family: sans-serif;
+        color: #E0E0E0; }
         #controlbar slider span.bubble.selection {
           top: 15px; }
-        #controlbar slider span.bubble.limit {
-          color: #808080; }

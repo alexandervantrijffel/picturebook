@@ -1,17 +1,22 @@
+$forecolor: #E0E0E0;
+
 #controlbar {
     position: absolute;
-    bottom: 60px;
+    bottom: 12px;
     height: 40px;
     width: 100%;
-    border: 1px solid #aaa;
-    background-color:rgba(0,0,0,0.2);
+    padding: 0 6px 0 6px;
+    background-color:rgba(0,0,0,0.4);
+    color: $forecolor;
+    clear: both;
+    z-index: 999;
     > div {
         float: left;
     }
     ul {
+        float: right;
         margin: 0;
         padding: 0;
-        clear: both;
         li {
             display: inline-block;
             list-style-type: none;
@@ -20,10 +25,27 @@
             vertical-align: middle;
         }
     }    
-    #addImageButton {
-        display: inline-block;
-        margin-top: 12px;
+    button {
+        color: #303030;
+        margin-top: 6px;
     }
+    a {
+        display: inline-block;
+        margin-top: 8px;
+    }
+    #toggleShowDetails {
+        color: #a0a0a0;
+    }
+    #enterfullscreen {
+        background: no-repeat url("../img/player-common-vfl.webp") -34px -983px;
+        width: 32px;
+        height: 32px;
+        margin: 3px 0 3px 0;
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
     slider {
         display: inline-block;
         position: relative;
@@ -110,13 +132,10 @@
                 padding: 1px 3px 1px 3px;
                 font-size: 0.7em;
                 font-family: sans-serif;
+                color: $forecolor;
 
                 &.selection {
                     top: 15px;
-                }
-
-                &.limit {
-                    color: #808080;
                 }
             }
         }

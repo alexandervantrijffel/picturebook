@@ -1,4 +1,4 @@
-﻿angular.module('ngApp').service 'ImageLoader', ($http) ->
+﻿angular.module('ngApp').service 'ImageLoader', ($http,rootUrl) ->
     @interval = 5000
     @updateInterval = (interval) =>
         if interval <= 600
@@ -25,19 +25,19 @@
         @index + 1 < @images.length
     @displayNext = =>
         if !@hasMoreImages()
-            console.log 'retrieving images, timer', @timer
             if @index == -1 || !@images || @images.length < @index
-                return $http.get 'http://localhost:3001/api/pics', {}
+                return $http.get "#{rootUrl}/api/pics", {}
                     .success (result) =>
-                        console.log 'result from load pics:',result
+                        # console.log 'result from load pics:',result
                         _.each result.images, (i) =>
                             @load i
                     .error (data,status,headers,config) ->
                         return console.log "#{status} failed to retrieve first images"
             else
-                return $http.post 'http://localhost:3001/api/pics/next', fromId: @images[@index].id
+                return $http.post "#{rootUrl}/api/pics/next", fromId: @images[@index]._id
                     .success (result) =>
-                        console.log 'result from next pics:',result
+                        # console.log 'result from next pics:',result
+                        console.log "retrieved #{result.images.length} pictures (total #{@images.length} images)."
                         _.each result.images, (i) =>
                             @load i
                     .error (data,status,headers,config) ->
@@ -53,24 +53,19 @@
             @index++
         else
             @index = 0;
-        console.log "displaying index #{@index}"
         @updateCurrentImage @images[@index]
     @displayPrevious = =>
         if @index > 0
             @index--
-        console.log "displaying index #{@index}"
         @updateCurrentImage @images[@index]
     @onTick = =>
         @displayNext()
         @timer = setTimeout @onTick, @interval
     @load = (imgsrc) =>
-        console.log 'loading image',imgsrc
         img1 = new Image()
         img1.onload = =>
-            console.log "img loaded with width #{img1.width} img height #{img1.height}"
+            #console.log "img loaded with width #{img1.width} img height #{img1.height}"
             @images.push img1
             if @images.length == 1 then @displayNext()
-        img1.src = imgsrc.src
-        img1._id = imgsrc._id
-        img1.postedAt = imgsrc.postedAt
+        img1[p]=imgsrc[p] for p of imgsrc 
     this
