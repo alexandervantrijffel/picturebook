@@ -1,3 +1,3 @@
-Picturebook picture viewer
+Picturebook picture viewer available at http://fullscreen.ws.
 
-Work in progress!
+It's work in progress, keep in touch!
