@@ -43,7 +43,7 @@
         i = document.getElementById('fullscreen')
         i.requestFullscreen || i.webkitRequestFullscreen || i.mozRequestFullScreen || i.msRequestFullscreen
     
-    if !$scope.hasFullScreen() then $("#enterfullscreen").hide()
+    if !$scope.hasFullScreen() then $(".js-enter-fullscreen").hide()
 
     $("body").keyup (e) =>
         if e.keyCode == 37
@@ -114,7 +114,7 @@
     this.showControlBar = (e) =>
         $(window).unbind "mousemove", this.showControlBar
         $(window).unbind "touchstart",this.showControlBar
-        $("#controlbar").fadeIn()
+        $(".js-controlbar").fadeIn()
         this.fadeControlBar()
 
     $scope.isInFullScreen = false
@@ -130,7 +130,7 @@
         if @timer && @timer > 0
             clearTimeout @timer
         @timer = setTimeout => 
-                $("#controlbar").fadeOut 1000
+                $(".js-controlbar").fadeOut 1000
                 $(window).mousemove this.showControlBar
                 $(window).bind "touchstart",this.showControlBar
             , if this.isInFullScreen then 2000 else 12000          

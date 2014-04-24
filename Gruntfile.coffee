@@ -38,7 +38,10 @@ module.exports = (grunt) ->
                 tasks: ['jade:compile', 'notify:jade']
             sass:
                 files: 'src/scss/**/*.scss'
-                tasks: ['sass:compile', 'cssmin:minify', 'notify:sass']
+                tasks: ['sass:compile', 'notify:sass']
+            css:
+                file: 'pub/styles/**/*.css'
+                tasks: ['cssmin:minify']
 
         coffee:
             compile:
@@ -67,9 +70,9 @@ module.exports = (grunt) ->
         cssmin:
             minify:
                 expand: true,
-                cwd: 'pub/',
-                src: ['styles/**/*.css'],
-                dest: 'pub/',
+                cwd: 'pub/styles/',
+                src: ['**/*.css', '!**/*.min.css'],
+                dest: 'pub/styles/',
                 ext: '.min.css'
 
         uglify:

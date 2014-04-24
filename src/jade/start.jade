@@ -15,7 +15,7 @@ div#infobar(data-ng-if="showRatios")
     div#resizeDiff {{imageDetails.resizeDiff}}
 div#fullscreen
     img(src="{{currentImage.src}}")
-    div(id="controlbar")
+    div(class="js-controlbar" id="controlbar")
         ul
             li(id ='slider-container')
                 slider(data-ng-model="currentInterval" 
@@ -23,12 +23,12 @@ div#fullscreen
                     translate-fn="translateInterval")
             li
                 a(href="" data-ng-click="toggleShowDetails()" id="toggleShowDetails" title="Show image details")
-                    i(class="fa fa-info-circle")
+                    i(class="fa fa-info-circle fa-2x")
             li
                 a(href="" data-ng-click="showAddImage()" id="addImageButton" title="Add new image")
-                    i(class="fa fa-plus-square")
+                    i(class="fa fa-plus-square fa-2x")
             li(data-ng-if="!isInFullScreen")
-                div#enterfullscreen(data-ng-click="goFullScreen()", title="Go full screen")
+                div#enterfullscreen(class="js-enter-fullscreen" data-ng-click="goFullScreen()", title="Go full screen")
     script(id='AddImage.html' type='text/ng-template')
         .modal-header
             h3 Add image

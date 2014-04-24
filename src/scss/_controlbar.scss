@@ -6,7 +6,7 @@ $forecolor: #E0E0E0;
     height: 40px;
     width: 100%;
     padding: 0 6px 0 6px;
-    background-color:rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.4);
     color: $forecolor;
     clear: both;
     z-index: 999;
@@ -23,18 +23,16 @@ $forecolor: #E0E0E0;
             float: left;
             margin-right: 20px;
             vertical-align: middle;
+            a > i{
+                display: inline-block;
+                margin-top: 6px;
+            }
         }
+
     }    
     button {
         color: #303030;
         margin-top: 6px;
-    }
-    a {
-        display: inline-block;
-        margin-top: 8px;
-    }
-    #toggleShowDetails {
-        color: #a0a0a0;
     }
     #enterfullscreen {
         background: no-repeat url("../img/player-common-vfl.webp") -34px -983px;
