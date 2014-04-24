@@ -2,21 +2,21 @@ doctype html
 html(id="ng-app" lang="en-us" data-ng-app="ngApp")
     head
         title fullscreen.ws | online photo viewer
-        meta(name="description" content="Online image viewer for viewing stunning, amazing and refreshing hi-res photos on mobile and desktop devices.")
-        meta(name="robots",content="ALL")
-        meta(name="rating",content="GENERAL")
+        meta(name="description", content="Online image viewer for viewing stunning, amazing and refreshing hi-res photos on mobile and desktop devices.")
+        meta(name="robots", content="ALL")
+        meta(name="rating", content="GENERAL")
         meta(name="viewport", content="width=device-width, initial-scale=1.0, user-scalable=no")
         meta(name="fragment" content="!")
-        meta(http-equiv="content-type" content="text/html; charset=utf-8")
+        meta(http-equiv="content-type", content="text/html; charset=utf-8")
         meta(http-equiv="X-UA-Compatible", content="IE=9")
-        meta(name="apple-mobile-web-app-capable" content="yes")
-        meta(name="apple-mobile-web-app-status-bar-style" content="black-translucent")
-        meta(http-equiv="X-UA-Compatible" content="IE=Edge")
+        meta(name="apple-mobile-web-app-capable", content="yes")
+        meta(name="apple-mobile-web-app-status-bar-style", content="black-translucent")
+        meta(http-equiv="X-UA-Compatible", content="IE=Edge")
         meta(charset="UTF-8")
-        link(href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet")
+        link(href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css", rel="stylesheet")
         link(href='styles/main.min.css', rel='stylesheet')
-        link(href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet")
-        link(href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet")
+        link(href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css", rel="stylesheet")
+        link(href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css", rel="stylesheet")
     body(ontouchmove="event.preventDefault()", data-ng-controller="ApplicationController")
         div#pagecontent
             block content
@@ -33,14 +33,14 @@ html(id="ng-app" lang="en-us" data-ng-app="ngApp")
         script(src="scripts/plugins/angular-slider.min.js")
         script(src='scripts/picturebook.min.js')
 
-        script(type="text/ng-template" id="loginModal.html")
-            div( class="modal-header")
+        script(type="text/ng-template", id="loginModal.html")
+            div(class="modal-header")
                 h3 Login 
-                   span(class="closebtn" data-ng-click="cancel()")
+                   span(class="closebtn", data-ng-click="cancel()")
             div(class="modal-body")
-                form(ng-submit="login(credentials)" novalidate)
+                form(ng-submit="login(credentials)", novalidate)
                     label(for="username") User name:
-                    input(type="text" id="username" ng-model="credentials.username")
+                    input(type="text", id="username", ng-model="credentials.username")
                     label(for="password") Password:
-                    input(type="password" id="password" ng-model="credentials.password")
+                    input(type="password", id="password", ng-model="credentials.password")
                     button(type="submit") Login

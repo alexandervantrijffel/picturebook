@@ -17,19 +17,19 @@ div#fullscreen
     img(src="{{currentImage.src}}")
     div(class="js-controlbar" id="controlbar")
         ul
-            li(id ='slider-container')
+            li(id="lider-container")
                 slider(data-ng-model="currentInterval" 
-                    floor="1" ceiling="5" step="1" precision="0" 
+                    floor="1", ceiling="5", step="1", precision="0", 
                     translate-fn="translateInterval")
             li
-                a(href="" data-ng-click="toggleShowDetails()" id="toggleShowDetails" title="Show image details")
+                a(href="", data-ng-click="toggleShowDetails()", id="toggleShowDetails", title="Show image details")
                     i(class="fa fa-info-circle fa-2x")
             li
-                a(href="" data-ng-click="showAddImage()" id="addImageButton" title="Add new image")
+                a(href="", data-ng-click="showAddImage()", id="addImageButton", title="Add new image")
                     i(class="fa fa-plus-square fa-2x")
             li(data-ng-if="!isInFullScreen")
-                div#enterfullscreen(class="js-enter-fullscreen" data-ng-click="goFullScreen()", title="Go full screen")
-    script(id='AddImage.html' type='text/ng-template')
+                div#enterfullscreen(class="js-enter-fullscreen", data-ng-click="goFullScreen()", title="Go full screen")
+    script(id='AddImage.html', type='text/ng-template')
         .modal-header
             h3 Add image
                 span.closebtn(data-ng-click='closeModal()', title="Close")

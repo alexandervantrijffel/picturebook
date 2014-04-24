@@ -40,7 +40,7 @@ module.exports = (grunt) ->
                 files: 'src/scss/**/*.scss'
                 tasks: ['sass:compile', 'notify:sass']
             css:
-                file: 'pub/styles/**/*.css'
+                files: 'pub/styles/**/*.css'
                 tasks: ['cssmin:minify']
 
         coffee:
