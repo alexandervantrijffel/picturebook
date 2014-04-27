@@ -1,4 +1,8 @@
-﻿angular.module('ngApp', ['ngRoute','ui.bootstrap','vr.directives.slider'])
+﻿getRootUrl = ->
+        location = window.location.host.toUpperCase()
+        if location == "LEXUBUNTU:8080" || location == "LOCALHOST:8080" then 'http://localhost:3001' else ''
+
+angular.module('ngApp', ['ngRoute','ui.bootstrap','vr.directives.slider'])
     .config ($routeProvider, $locationProvider, USER_ROLES,$httpProvider) ->
         $routeProvider
             .when '/', {templateUrl: 'start.html', controller: 'StartController'}
@@ -8,7 +12,7 @@
             .html5Mode(false)
             .hashPrefix("!")
         delete $httpProvider.defaults.headers.common['X-Requested-With']
-    .value 'rootUrl', if window.location.host.toUpperCase() == "LOCALHOST:8080" then 'http://localhost:3001' else ''
+    .value 'rootUrl', getRootUrl()
     .run ($rootScope, AUTH_EVENTS, AuthService) ->
         #$rootScope.$on '$locationChangeStart', (event, next, current) ->
         $rootScope.$on '$routeChangeStart', (event, next, current) ->
@@ -20,7 +24,7 @@
                     if AuthService.isAuthenticated
                         $rootScope.$broadcast AUTH_EVENTS.notAuthorized
                     else
-                        $rootScope.$broadcast AUTH_EVENTS.notAuthenticated                
+                        $rootScope.$broadcast AUTH_EVENTS.notAuthenticated                  
 
 if (typeof console == "undefined")
     window.console = 

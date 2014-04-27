@@ -6,8 +6,8 @@
     this.imageLoader = ImageLoader.create (photo) ->
         $scope.currentImage = photo
         windowSize = 
-            x:$(document).width()
-            y:$(document).height()
+            x:document.getElementById("fullscreen").clientWidth
+            y:document.getElementById("fullscreen").clientHeight
         screenRatio = windowSize.x / windowSize.y
         imageRatio = photo.width / photo.height
         ratioDiff = (screenRatio / imageRatio).toFixed(2)
@@ -54,9 +54,8 @@
             this.imageLoader.displayNext()
         $scope.$apply()
     
-    $scope.currentInterval = 3
     $scope.$watch 'currentInterval', (newVal,oldVal) =>
-        newInterval = 5000
+        newInterval = 10000
         switch newVal
             when 1 then newInterval = 40000
             when 2 then newInterval = 20000
@@ -64,6 +63,7 @@
             when 4 then newInterval = 4000
             when 5 then newInterval = 1500
         this.imageLoader.updateInterval newInterval
+    $scope.currentInterval = 3
     $scope.translateInterval = (val) ->
         switch val
             when '1' then "Very slow"

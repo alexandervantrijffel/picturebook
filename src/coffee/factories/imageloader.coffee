@@ -1,9 +1,10 @@
 ﻿angular.module('ngApp').service 'ImageLoader', ($http,rootUrl) ->
-    @interval = 5000
+    @interval = 10000
     @updateInterval = (interval) =>
         if interval <= 600
             console.error 'The interval must be at least 600 (ms)'
             return
+        @interval = interval
         @resetTimeout()
     @create = (updateCurrentImage) =>
         @images = []

@@ -14,8 +14,8 @@ div#infobar(data-ng-if="showRatios")
     div#ratioDiff {{imageDetails.ratioDiff}}
     div#resizeDiff {{imageDetails.resizeDiff}}
 div#fullscreen
-    img(src="{{currentImage.src}}")
-    div(class="js-controlbar" id="controlbar")
+    img(src="{{currentImage.src}}")    
+    div(class="js-controlbar", id="controlbar")
         ul
             li(id="lider-container")
                 slider(data-ng-model="currentInterval" 
